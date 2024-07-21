@@ -22,9 +22,10 @@ const App: FC = () => {
 
     const getTextFeverAsync = async () => {
         setIsProgress(true);
+        setResult(undefined);
 
         await axios.post(
-            "https://77ba-59-132-68-231.ngrok-free.app/getTextFervor",
+            "https://b5f6-59-132-68-231.ngrok-free.app/getTextFervor",
             {"text": text},
             {
                 headers: {
