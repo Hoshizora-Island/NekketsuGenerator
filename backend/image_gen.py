@@ -6,6 +6,8 @@ import requests
 import time
 from googletrans import Translator
 import tokens
+import base64
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -29,7 +31,7 @@ def query(payload):
 @app.route("/generateImage", methods=["POST"])
 def generate_image():
     req = request.json
-    text = req.get("text", "")
+    text = req.get("text")
     if not text:
         return Response("No text provided", status=400)
 
@@ -62,9 +64,11 @@ def generate_image():
                 file_path = os.path.join(folder, file_name)
 
                 # 画像の保存
-                image.save(file_path)
-                print(f"Image saved successfully as {file_path}.")
-                return jsonify({"file_path": file_path})
+                buffered = BytesIO()
+                image.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue())
+                return {"img": img_str}
+
             except Exception as e:
                 print(f"Image processing error: {e}")
                 return Response("Image processing error", status=500)
